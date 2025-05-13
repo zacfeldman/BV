@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: Blu Voucher Redemption API
+  version: 1.0.0
+  description: >
+    This API allows redemption of Blu Vouchers for cryptocurrency via a unified API.
+    Currently integrated with VALR for crypto purchases and transfers.
+
+servers:
+  - url: https://api.bluvoucher.io
+    description: Production environment
+  - url: https://sandbox.api.bluvoucher.io
+    description: Sandbox environment (no live crypto)
+
+paths:
+  /get-rate:
+    post:
+      summary: Estimate crypto received from a voucher
+      description: |
+        Estimates the crypto amount a customer will receive after commission and conversion.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                voucherValueZAR:
+                  type: number
+                currency:
+                  type: string
+                network:
+                  type: string
+                redemptionPartnerId:
+                  type: string
+              required:
+                - voucherValueZAR
+                - currency
+                - network
+                - redemptionPartnerId
+      responses:
+        '200':
+          description: Estimated crypto value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  originalAmount:
+                    type: number
+                  amountAfterCustomerCommission:
+                    type: number
+                  exchangeRateZARtoUSDC:
+                    type: number
+                  estimatedCrypto:
+                    type: number
+                  commissionDetails:
+                    type: object
+                    properties:
+                      customerCommissionPercent:
+                        type: number
+                      partnerCommissionPercent:
+                        type: number
+
+  /redeem:
+    post:
+      summary: Redeem voucher and transfer crypto
+      description: |
+        Redeems a voucher, converts ZAR to crypto, and transfers to the partner wallet.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                voucherCode:
+                  type: string
+                currency:
+                  type: string
+                network:
+                  type: string
+                walletAddress:
+                  type: string
+                redemptionPartnerId:
+                  type: string
+              required:
+                - voucherCode
+                - currency
+                - network
+                - walletAddress
+                - redemptionPartnerId
+      responses:
+        '200':
+          description: Successful redemption
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  voucherValueZAR:
+                    type: number
+                  amountAfterCustomerCommission:
+                    type: number
+                  amountAfterPartnerCommission:
+                    type: number
+                  cryptoTransferred:
+                    type: number
+                  transactionHash:
+                    type: string
+                  status:
+                    type: string
