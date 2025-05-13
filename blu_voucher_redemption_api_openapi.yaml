@@ -80,15 +80,11 @@ paths:
                   type: string
                 network:
                   type: string
-                walletAddress:
-                  type: string
                 redemptionPartnerId:
                   type: string
               required:
                 - voucherCode
                 - currency
-                - network
-                - walletAddress
                 - redemptionPartnerId
       responses:
         '200':
